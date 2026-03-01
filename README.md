@@ -15,8 +15,8 @@ A comprehensive Django-based dashboard showcasing various data visualization lib
 
 *   **Geospatial Visualization**:
     *   **Kepler.gl**: High-performance geospatial analysis (using OpenStreetMap tiles).
-    *   **PyDeck**: 3D WebGL-powered maps (using CARTO/OSM tiles).
     *   **Leaflet**: Mobile-friendly interactive maps.
+    *   **OpenLayers**: Open-source vector map rendering.
     *   **MapLibre**: Open-source vector map rendering.
 
 *   **Reporting & Export**:
@@ -31,7 +31,7 @@ A comprehensive Django-based dashboard showcasing various data visualization lib
 
 *   **Backend**: Python, Django, Pandas, NumPy
 *   **Frontend**: HTML5, CSS3 (Bootstrap 5, AdminLTE), JavaScript
-*   **Visualization Libraries**: Plotly, Bokeh, PyGWalker, Kepler.gl, PyDeck, ECharts, Chart.js, D3.js, Leaflet, MapLibre GL JS
+*   **Visualization Libraries**: Plotly, Bokeh, PyGWalker, Kepler.gl, OpenLayers, ECharts, Chart.js, D3.js, Leaflet, MapLibre GL JS
 
 ## Installation
 
