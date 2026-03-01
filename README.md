@@ -10,8 +10,6 @@ A comprehensive Django-based dashboard showcasing various data visualization lib
 ![Geospatial Analysis](screenshots/map.png)
 *Geospatial Analysis with Kepler.gl*
 
-*(Note: Add your actual screenshots to the `screenshots/` folder and update the filenames above)*
-
 ## Features
 
 *   **Interactive Dashboards**:
