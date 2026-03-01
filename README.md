@@ -2,6 +2,16 @@
 
 A comprehensive Django-based dashboard showcasing various data visualization libraries and reporting tools. This project demonstrates full-stack development skills, integrating Python backend data processing with modern frontend visualization technologies.
 
+## Screenshots
+
+![Dashboard Overview](screenshots/dashboard.png)
+*Interactive Dashboard with PyGWalker*
+
+![Geospatial Analysis](screenshots/map.png)
+*Geospatial Analysis with Kepler.gl*
+
+*(Note: Add your actual screenshots to the `screenshots/` folder and update the filenames above)*
+
 ## Features
 
 *   **Interactive Dashboards**:
