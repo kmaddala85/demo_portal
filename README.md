@@ -37,7 +37,7 @@ A comprehensive Django-based dashboard showcasing various data visualization lib
 
 1.  **Clone the repository**:
     ```bash
-    git clone https://github.com/yourusername/demo_portal.git
+    git clone https://github.com/kmaddala85/demo_portal.git
     cd demo_portal
     ```
 
