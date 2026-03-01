@@ -127,6 +127,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# Location where collectstatic will copy files to for deployment
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+# Locations where Django looks for static files during development
 STATICFILES_DIRS = [
     STATIC_DIR,
 ]
