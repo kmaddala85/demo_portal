@@ -12,3 +12,4 @@ plotly
 bokeh
 python-dotenv
 pyproj
+setuptools
