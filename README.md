@@ -33,6 +33,10 @@ A comprehensive Django-based dashboard showcasing various data visualization lib
 *   **Frontend**: HTML5, CSS3 (Bootstrap 5, AdminLTE), JavaScript
 *   **Visualization Libraries**: Plotly, Bokeh, PyGWalker, Kepler.gl, OpenLayers, ECharts, Chart.js, D3.js, Leaflet, MapLibre GL JS
 
+## Prerequisites
+
+*   **Python**: Tested up to Python 3.12. (Note: Python 3.13 is currently not supported due to dependency compatibility issues).
+
 ## Installation
 
 1.  **Clone the repository**:
