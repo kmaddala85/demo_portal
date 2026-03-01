@@ -1,0 +1,80 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: D3.js
+    License: ISC License
+    Source: https://d3js.org/
+    Copyright 2010-2023 Mike Bostock
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>D3.js</h3>
+    <p class="text-muted"><small>Visualization powered by D3.js (ISC License)</small></p>
+    <div class="col-sm-4">
+        <h4>Horizontal Bar Chart</h4>
+        <div id="d3-chart1" style="height: 400px; border: 1px solid #eee; padding: 10px;"></div>
+    </div>
+    <div class="col-sm-4">
+        <h4>Vertical Bar Chart</h4>
+        <div id="d3-chart2" style="height: 400px; border: 1px solid #eee; padding: 10px;"></div>
+    </div>
+</div>
+
+<script>
+    var data = [30, 86, 168, 281, 303, 365];
+    var barThickness = 40; // Equal thickness for both charts
+    var barPadding = 10;
+
+    // --- Chart 1: Horizontal Bar Chart ---
+    d3.select("#d3-chart1")
+      .selectAll("div")
+      .data(data)
+      .enter()
+      .append("div")
+      .style("width", function(d) { return d + "px"; })
+      .style("height", barThickness + "px") // Fixed height (thickness)
+      .style("line-height", barThickness + "px") // Center text vertically
+      .style("background-color", "steelblue")
+      .style("color", "white")
+      .style("margin-bottom", barPadding + "px")
+      .style("padding-left", "10px")
+      .text(function(d) { return d; });
+
+
+    // --- Chart 2: Vertical Bar Chart ---
+    var svgWidth = 400;
+    var svgHeight = 380; // Slightly less than container to avoid scrollbars
+
+    var svg = d3.select("#d3-chart2")
+        .append("svg")
+        .attr("width", svgWidth)
+        .attr("height", svgHeight);
+
+    // Create bars
+    svg.selectAll("rect")
+        .data(data)
+        .enter()
+        .append("rect")
+        .attr("x", function(d, i) { return i * (barThickness + barPadding); })
+        .attr("y", function(d) { return svgHeight - d; })
+        .attr("width", barThickness) // Fixed width (thickness)
+        .attr("height", function(d) { return d; })
+        .attr("fill", "steelblue");
+
+    // Add labels
+    svg.selectAll("text")
+        .data(data)
+        .enter()
+        .append("text")
+        .text(function(d) { return d; })
+        .attr("x", function(d, i) { return i * (barThickness + barPadding) + barThickness / 2; })
+        .attr("y", function(d) { return svgHeight - d - 5; })
+        .attr("text-anchor", "middle")
+        .attr("fill", "black")
+        .style("font-size", "12px");
+
+</script>
+
+{% endblock content %}

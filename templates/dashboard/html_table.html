@@ -1,0 +1,35 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: Bootstrap Tables
+    License: MIT License
+    Source: https://getbootstrap.com/
+    Copyright (c) 2011-2023 The Bootstrap Authors
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;width:70%">
+    <h3>HTML Table</h3>
+    <p class="text-muted"><small>Styled with Bootstrap (MIT License)</small></p>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock content %}

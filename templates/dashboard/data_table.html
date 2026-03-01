@@ -1,0 +1,41 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: DataTables
+    License: MIT License
+    Source: https://datatables.net/
+    Copyright (c) 2008-2023 SpryMedia Ltd
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;width:70%">
+    <h3>Data Table</h3>
+    <p class="text-muted"><small>Table powered by DataTables (MIT License)</small></p>
+    <table id="example" class="table table-striped" style="width:100%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Value</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in data %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.name }}</td>
+                <td>{{ item.value }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $('#example').DataTable();
+    });
+</script>
+
+{% endblock content %}

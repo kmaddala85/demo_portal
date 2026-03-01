@@ -1,0 +1,27 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: Custom JS / SQL Explorer Concept
+    License: MIT License (Assumed for this demo code)
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>SQL Explorer</h3>
+    <p class="text-muted"><small>SQL Explorer Concept (Custom JS)</small></p>
+    <textarea id="sql-query" rows="4" cols="50" placeholder="Enter SQL query..."></textarea>
+    <button id="run-query" class="btn btn-primary">Run Query</button>
+    <div id="query-results"></div>
+</div>
+
+<script>
+    document.getElementById('run-query').addEventListener('click', function() {
+        var query = document.getElementById('sql-query').value;
+        // Send query to backend and display results
+        console.log("Running query: " + query);
+        document.getElementById('query-results').innerText = "Results for: " + query;
+    });
+</script>
+
+{% endblock content %}

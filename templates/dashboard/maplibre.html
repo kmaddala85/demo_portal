@@ -1,0 +1,97 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: MapLibre GL JS
+    License: BSD 3-Clause License
+    Source: https://maplibre.org/
+    Copyright (c) 2020, MapLibre contributors
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>MapLibre</h3>
+    <p class="text-muted"><small>Map powered by MapLibre GL JS (BSD 3-Clause License) & OpenStreetMap</small></p>
+    <div id="map" style="height: 600px; width: 100%;"></div>
+</div>
+
+<script>
+    var map = new maplibregl.Map({
+        container: 'map',
+        // Use a free OSM raster tile style instead of Mapbox vector tiles
+        style: {
+            'version': 8,
+            'sources': {
+                'osm': {
+                    'type': 'raster',
+                    'tiles': [
+                        'https://a.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        'https://b.tile.openstreetmap.org/{z}/{x}/{y}.png',
+                        'https://c.tile.openstreetmap.org/{z}/{x}/{y}.png'
+                    ],
+                    'tileSize': 256,
+                    'attribution': '&copy; OpenStreetMap Contributors',
+                    'maxzoom': 19
+                }
+            },
+            'layers': [
+                {
+                    'id': 'osm',
+                    'type': 'raster',
+                    'source': 'osm'
+                }
+            ]
+        },
+        center: [-98.5795, 39.8283], // Center on US
+        zoom: 3 // Zoom out to see US
+    });
+
+    map.addControl(new maplibregl.NavigationControl());
+
+    // Add data points when map loads
+    map.on('load', function () {
+        // Load data passed from Django view
+        var geojsonData = {{ map_data|safe }};
+
+        map.addSource('points', {
+            'type': 'geojson',
+            'data': geojsonData
+        });
+
+        map.addLayer({
+            'id': 'points',
+            'type': 'circle',
+            'source': 'points',
+            'paint': {
+                'circle-radius': 6,
+                'circle-color': '#B42222'
+            }
+        });
+
+        // Add popup on click
+        map.on('click', 'points', function (e) {
+            var coordinates = e.features[0].geometry.coordinates.slice();
+            var description = e.features[0].properties.description;
+            var title = e.features[0].properties.title;
+
+            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+            }
+
+            new maplibregl.Popup()
+                .setLngLat(coordinates)
+                .setHTML('<strong>' + title + '</strong><p>' + description + '</p>')
+                .addTo(map);
+        });
+
+        // Change cursor on hover
+        map.on('mouseenter', 'points', function () {
+            map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', 'points', function () {
+            map.getCanvas().style.cursor = '';
+        });
+    });
+</script>
+
+{% endblock content %}

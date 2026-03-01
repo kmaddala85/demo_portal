@@ -1,0 +1,58 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    License: MIT License
+    Source: https://kepler.gl/
+    Copyright (c) 2018 Uber Technologies, Inc.
+-->
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2>Kepler.gl Map</h2>
+            <p>Sample Kepler.gl map visualization.</p>
+            <p class="text-muted"><small>Map powered by Kepler.gl (MIT License)</small></p>
+
+            <!-- Kepler Map Container -->
+            <!-- We use an iframe with srcdoc to isolate the Kepler map's CSS/JS from the main page -->
+            <div class="map-container" style="height: 600px; width: 100%; border: 1px solid #ddd; border-radius: 4px; overflow: hidden;">
+                <iframe
+                    srcdoc="{{ map_html|force_escape }}"
+                    style="width: 100%; height: 100%; border: none;"
+                    sandbox="allow-scripts allow-same-origin allow-popups"
+                ></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Force the iframe content to resize after it loads
+    document.querySelector('iframe').onload = function() {
+        var iframeDoc = this.contentDocument || this.contentWindow.document;
+
+        // Find the root div that Kepler creates (usually has a class like 'kepler-gl')
+        // Or simply target the body and the main react root
+        var style = document.createElement('style');
+        style.innerHTML = `
+            html, body, #app, .kepler-gl {
+                margin: 0 !important;
+                padding: 0 !important;
+                overflow: hidden !important;
+            }
+            /* Override any inline styles on the main container div */
+            body > div {
+                height: 100% !important;
+                width: 100% !important;
+            }
+        `;
+        iframeDoc.head.appendChild(style);
+
+        // Trigger a window resize event inside the iframe to force Kepler to re-calculate dimensions
+        this.contentWindow.dispatchEvent(new Event('resize'));
+    };
+</script>
+
+{% endblock content %}

@@ -1,0 +1,73 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: Plotly.js
+    License: MIT License
+    Source: https://plotly.com/javascript/
+    Copyright (c) 2019 Plotly, Inc.
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>Stock Live Data</h3>
+    <p class="text-muted"><small>Live data simulation powered by Plotly.js (MIT License)</small></p>
+    <div id="stock-chart" style="width:100%;height:500px;"></div>
+</div>
+
+<script>
+    // Initial data
+    var time = new Date();
+    var data = [{
+        x: [time],
+        y: [Math.random() * 100],
+        mode: 'lines',
+        line: {color: '#80CAF6'}
+    }];
+
+    var layout = {
+        title: 'Real-time Stock Price Simulation',
+        template: 'plotly_dark', // This string might not work if the template object isn't loaded
+        // Explicitly setting dark theme properties as a fallback/override
+        paper_bgcolor: '#111111',
+        plot_bgcolor: '#111111',
+        font: {
+            color: '#ffffff'
+        },
+        xaxis: {
+            type: 'date',
+            title: 'Time',
+            gridcolor: '#444444'
+        },
+        yaxis: {
+            title: 'Price ($)',
+            range: [0, 100],
+            gridcolor: '#444444'
+        }
+    };
+
+    Plotly.newPlot('stock-chart', data, layout);
+
+    // Simulate live data updates
+    setInterval(function() {
+        var time = new Date();
+        var update = {
+            x:  [[time]],
+            y: [[Math.random() * 100]]
+        };
+
+        // Calculate range for sliding window (1 minute history)
+        var olderTime = new Date(time.getTime() - 60000);
+        var futureTime = new Date(time.getTime());
+
+        var minuteView = {
+            'xaxis.range': [olderTime, futureTime]
+        };
+
+        Plotly.relayout('stock-chart', minuteView);
+        Plotly.extendTraces('stock-chart', update, [0]);
+
+    }, 1000);
+</script>
+
+{% endblock content %}

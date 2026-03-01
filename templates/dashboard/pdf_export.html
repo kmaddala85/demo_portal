@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Export to PDF</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        .plot-container {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .plot-container img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 5px;
+            background-color: #f9f9f9;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>My Plotly Plots</h1>
+
+    <div class="plot-container">
+        <h2>Circle Plot</h2>
+        <img src="data:image/png;base64,{{ plot_img1 }}" alt="Circle Plot">
+    </div>
+
+    <div class="plot-container">
+        <h2>Bubble Plot</h2>
+        <img src="data:image/png;base64,{{ plot_img2 }}" alt="Bubble Plot">
+    </div>
+</body>
+</html>

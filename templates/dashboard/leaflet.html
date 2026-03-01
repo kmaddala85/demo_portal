@@ -1,0 +1,30 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: Leaflet
+    License: BSD 2-Clause "Simplified" License
+    Source: https://leafletjs.com/
+    Copyright (c) 2010-2023, Vladimir Agafonkin
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>Leaflet Map</h3>
+    <p class="text-muted"><small>Map powered by Leaflet (BSD 2-Clause License) & OpenStreetMap (ODbL)</small></p>
+    <div id="map" style="height: 600px;"></div>
+</div>
+
+<script>
+    var map = L.map('map').setView([51.505, -0.09], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    L.marker([51.5, -0.09]).addTo(map)
+        .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+        .openPopup();
+</script>
+
+{% endblock content %}

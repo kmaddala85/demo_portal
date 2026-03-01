@@ -1,0 +1,14 @@
+Django==5.2.3
+pandas
+numpy
+pygwalker
+geopandas
+shapely
+keplergl
+pydeck
+weasyprint
+matplotlib
+plotly
+bokeh
+python-dotenv
+pyproj

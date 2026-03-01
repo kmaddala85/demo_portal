@@ -1,0 +1,27 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: jsPDF
+    License: MIT License
+    Source: https://github.com/parallax/jsPDF
+    Copyright (c) 2010-2021 James Hall, https://github.com/MrRio/jsPDF
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>JsPDF</h3>
+    <p class="text-muted"><small>PDF generation powered by jsPDF (MIT License)</small></p>
+    <button id="generate-pdf" class="btn btn-primary">Generate PDF</button>
+</div>
+
+<script>
+    document.getElementById('generate-pdf').addEventListener('click', function() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF();
+        doc.text("Hello world!", 10, 10);
+        doc.save("a4.pdf");
+    });
+</script>
+
+{% endblock content %}

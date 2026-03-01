@@ -1,0 +1,32 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: Plotly.js
+    License: MIT License
+    Source: https://plotly.com/javascript/
+    Copyright (c) 2019 Plotly, Inc.
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>Charts</h3>
+    <p class="text-muted"><small>Charts powered by Plotly.js (MIT License)</small></p>
+    {% for plot in plot_html %}
+    <div class="col-md-6">
+        {{ plot | safe }}
+    </div>
+    {% endfor %} 
+</div>
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>Tables</h3>
+    {% for table in table_html %}
+    <div class="col-md-6">
+        {{ table | safe }}
+    </div>
+    {% endfor %} 
+</div>
+
+
+{% endblock content %}

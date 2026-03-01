@@ -1,0 +1,18 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: PyGWalker
+    License: Apache License 2.0
+    Source: https://github.com/Kanaries/pygwalker
+    Copyright (c) 2022 Kanaries Data
+-->
+
+<h1> PygWalker! </h1>
+<p>Interactive data visualization using PyGWalker.</p>
+<p class="text-muted"><small>Powered by PyGWalker (Apache 2.0 License)</small></p>
+
+{{ pyg_html|safe }}
+
+{% endblock content %}

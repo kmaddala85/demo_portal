@@ -1,0 +1,158 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: OpenLayers
+    License: BSD 2-Clause License
+    Source: https://openlayers.org/
+    Copyright (c) 2005-2023 OpenLayers Contributors
+-->
+
+<div class="row" style="margin-top: 2%; margin-bottom: 20px;">
+    <h3>OpenLayers</h3>
+    <p class="text-muted"><small>Map powered by OpenLayers (BSD 2-Clause License) & OpenStreetMap</small></p>
+    <div id="map" style="height: 600px; width: 100%;"></div>
+    <div id="popup" class="ol-popup">
+        <a href="#" id="popup-closer" class="ol-popup-closer"></a>
+        <div id="popup-content"></div>
+    </div>
+</div>
+
+<style>
+    .ol-popup {
+        position: absolute;
+        background-color: white;
+        box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid #cccccc;
+        bottom: 12px;
+        left: -50px;
+        min-width: 280px;
+    }
+    .ol-popup:after, .ol-popup:before {
+        top: 100%;
+        border: solid transparent;
+        content: " ";
+        height: 0;
+        width: 0;
+        position: absolute;
+        pointer-events: none;
+    }
+    .ol-popup:after {
+        border-top-color: white;
+        border-width: 10px;
+        left: 48px;
+        margin-left: -10px;
+    }
+    .ol-popup:before {
+        border-top-color: #cccccc;
+        border-width: 11px;
+        left: 48px;
+        margin-left: -11px;
+    }
+    .ol-popup-closer {
+        text-decoration: none;
+        position: absolute;
+        top: 2px;
+        right: 8px;
+    }
+    .ol-popup-closer:after {
+        content: "✖";
+    }
+</style>
+
+<script>
+    // Load data passed from Django view
+    var geojsonData = {{ map_data|safe }};
+
+    // Create vector source from GeoJSON
+    var vectorSource = new ol.source.Vector({
+        features: new ol.format.GeoJSON().readFeatures(geojsonData, {
+            featureProjection: 'EPSG:3857' // Transform from WGS84 to Web Mercator
+        })
+    });
+
+    // Create vector layer with styling
+    var vectorLayer = new ol.layer.Vector({
+        source: vectorSource,
+        style: new ol.style.Style({
+            image: new ol.style.Circle({
+                radius: 7,
+                fill: new ol.style.Fill({color: '#B42222'}),
+                stroke: new ol.style.Stroke({
+                    color: 'white',
+                    width: 2
+                })
+            })
+        })
+    });
+
+    // Initialize Map
+    var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM() // OpenStreetMap tiles
+            }),
+            vectorLayer
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([-98.5795, 39.8283]), // Center on US
+            zoom: 4
+        })
+    });
+
+    // Popup logic
+    var container = document.getElementById('popup');
+    var content = document.getElementById('popup-content');
+    var closer = document.getElementById('popup-closer');
+
+    var overlay = new ol.Overlay({
+        element: container,
+        autoPan: true,
+        autoPanAnimation: {
+            duration: 250
+        }
+    });
+    map.addOverlay(overlay);
+
+    closer.onclick = function() {
+        overlay.setPosition(undefined);
+        closer.blur();
+        return false;
+    };
+
+    // Display popup on click
+    map.on('singleclick', function(evt) {
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function(feature) {
+            return feature;
+        });
+
+        if (feature) {
+            var geometry = feature.getGeometry();
+            var coord = geometry.getCoordinates();
+            var props = feature.getProperties();
+
+            content.innerHTML = '<p><strong>' + props.name + '</strong></p>' +
+                                '<p>Value: ' + props.value + '</p>';
+            overlay.setPosition(coord);
+        } else {
+            overlay.setPosition(undefined);
+        }
+    });
+
+    // Change cursor on hover
+    map.on('pointermove', function(e) {
+        if (e.dragging) {
+            return;
+        }
+        var pixel = map.getEventPixel(e.originalEvent);
+        var hit = map.hasFeatureAtPixel(pixel);
+        map.getTargetElement().style.cursor = hit ? 'pointer' : '';
+    });
+
+</script>
+
+{% endblock content %}

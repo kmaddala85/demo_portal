@@ -1,0 +1,40 @@
+{% extends "base/base.html" %}
+{% load static %}
+{% block content%}
+
+<!--
+    Library: PyDeck
+    License: MIT License
+    Source: https://pydeck.gl/
+    Copyright (c) 2019 Uber Technologies, Inc.
+-->
+
+<style>
+    .map-container {
+        width: 98% !important; /* Adjust to your desired width */
+        height: 80% !important; /* Adjust the height */
+        margin: 0 auto; /* Center the map, optional */
+        border: 1px solid #ddd; /* Optional: border for visualization */
+        position: relative; /* Necessary if positioning with absolute elements */
+    }
+    #deck-container canvas {
+        width: 79% !important; /* Adjust to your desired width */
+        height: 75% !important;
+    }
+</style>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <h2>PyDeck</h2>
+            <p>PyDeck Hexagon Layer Visualization</p>
+            <p class="text-muted"><small>Map powered by PyDeck (MIT License)</small></p>
+            <div class="map-container">
+                {{ map_html|safe }}
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
