@@ -4,7 +4,6 @@ import pygwalker as pyg
 import geopandas as gpd
 import shapely.geometry as geom
 from keplergl import KeplerGl
-import pydeck as pdk
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
@@ -17,6 +16,7 @@ from plotly.io import to_image
 import json
 from pyproj import Geod
 import numpy as np
+import plotly.express as px
 
 # WGS84 ellipsoid (default for lat/lon)
 geod = Geod(ellps="WGS84")
@@ -181,9 +181,53 @@ def matplotlib_pdf(request):
     buffer.seek(0)
     return FileResponse(buffer, as_attachment=True, filename='matplotlib_report.pdf')
 
+def weasyprint_view(request):
+    # 1. Create Plotly Charts for Preview
+    df = px.data.iris()
+    fig1 = px.scatter(df, x="sepal_width", y="sepal_length", color="species", title="Iris Scatter Plot")
+    plot_html1 = fig1.to_html(full_html=False, include_plotlyjs=False)
+
+    df2 = px.data.tips()
+    fig2 = px.bar(df2, x="sex", y="total_bill", color="smoker", barmode="group", title="Tips Bar Chart")
+    plot_html2 = fig2.to_html(full_html=False, include_plotlyjs=False)
+
+    return render(request, 'dashboard/weasyprint_preview.html', {
+        'title': 'WeasyPrint PDF Preview',
+        'page_header': 'WeasyPrint PDF Generation',
+        'plot_html1': plot_html1,
+        'plot_html2': plot_html2
+    })
+
 def weasyprint_pdf(request):
-    html_string = render_to_string('dashboard/pdf_template.html', {'title': 'WeasyPrint PDF'})
-    html = HTML(string=html_string)
+    # 1. Create Plotly Charts
+    df = px.data.iris()
+    fig1 = px.scatter(df, x="sepal_width", y="sepal_length", color="species", title="Iris Scatter Plot")
+    
+    df2 = px.data.tips()
+    fig2 = px.bar(df2, x="sex", y="total_bill", color="smoker", barmode="group", title="Tips Bar Chart")
+    
+    # 2. Save them as static images
+    static_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'static')
+    if not os.path.exists(static_dir):
+        os.makedirs(static_dir)
+        
+    image_filename1 = 'plotly_chart1.png'
+    image_path1 = os.path.join(static_dir, image_filename1)
+    fig1.write_image(image_path1)
+
+    image_filename2 = 'plotly_chart2.png'
+    image_path2 = os.path.join(static_dir, image_filename2)
+    fig2.write_image(image_path2)
+    
+    # 3. Render the HTML template with the images
+    html_string = render_to_string('dashboard/pdf_template.html', {
+        'title': 'WeasyPrint PDF Report',
+        'image_path1': image_path1,
+        'image_path2': image_path2
+    })
+    
+    # 4. Generate PDF
+    html = HTML(string=html_string, base_url=request.build_absolute_uri())
     pdf_file = html.write_pdf()
     
     response = HttpResponse(pdf_file, content_type='application/pdf')

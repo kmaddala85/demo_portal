@@ -13,3 +13,4 @@ bokeh
 python-dotenv
 pyproj
 setuptools
+kaleido

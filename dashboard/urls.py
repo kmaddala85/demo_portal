@@ -13,7 +13,11 @@ urlpatterns = [
         path('d3js', views.d3js, name='D3js'),
         path('echarts', views.echarts, name='ECharts'),
         path('matplotlib_pdf', views.matplotlib_pdf, name='Matplotlib-PDF'),
-        path('weasyprint_pdf', views.weasyprint_pdf, name='Weasyprint-PDF'),
+        
+        # WeasyPrint URLs
+        path('weasyprint_preview', views.weasyprint_view, name='Weasyprint-PDF'), # Main link
+        path('weasyprint_download', views.weasyprint_pdf, name='Weasyprint-PDF-Download'), # Action link
+
         path('jspdf', views.jspdf, name='JsPDF'),
         path('html_table', views.html_table, name='HTML-Table'),
         path('data_table', views.data_table, name='Data-Table'),
