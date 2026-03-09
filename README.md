@@ -17,12 +17,14 @@ A comprehensive Django-based dashboard showcasing various data visualization lib
     *   **Bokeh**: Python-based interactive visualizations.
     *   **PyGWalker**: Tableau-like drag-and-drop data exploration.
     *   **Apache ECharts**: High-performance, modern JavaScript charts.
+    *   **PyDeck**: High-scale spatial rendering for large datasets.
     *   **Chart.js**: Simple and flexible JavaScript charting.
     *   **D3.js**: Custom, low-level data visualizations.
     *   **Stock Live**: Real-time data simulation using Plotly.js.
 
 *   **Geospatial Visualization**:
     *   **Kepler.gl**: High-performance geospatial analysis (using OpenStreetMap tiles).
+    *   **PyDeck**: WebGL-powered visualization for large-scale datasets.
     *   **Leaflet**: Mobile-friendly interactive maps.
     *   **OpenLayers**: Open-source vector map rendering.
     *   **MapLibre**: Open-source vector map rendering.
@@ -39,7 +41,7 @@ A comprehensive Django-based dashboard showcasing various data visualization lib
 
 *   **Backend**: Python, Django, Pandas, NumPy
 *   **Frontend**: HTML5, CSS3 (Bootstrap 5, AdminLTE), JavaScript
-*   **Visualization Libraries**: Plotly, Bokeh, PyGWalker, Kepler.gl, OpenLayers, ECharts, Chart.js, D3.js, Leaflet, MapLibre GL JS
+*   **Visualization Libraries**: Plotly, Bokeh, PyGWalker, Kepler.gl, PyDeck, OpenLayers, ECharts, Chart.js, D3.js, Leaflet, MapLibre GL JS
 
 ## Prerequisites
 
