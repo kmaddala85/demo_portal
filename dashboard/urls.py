@@ -15,7 +15,7 @@ urlpatterns = [
         path('matplotlib_pdf', views.matplotlib_pdf, name='Matplotlib-PDF'),
         
         # WeasyPrint URLs
-        path('weasyprint_preview', views.weasyprint_view, name='Weasyprint-PDF'), # Main link
+        path('weasyprint_pdf', views.weasyprint_view, name='Weasyprint-PDF'), # Main link
         path('weasyprint_download', views.weasyprint_pdf, name='Weasyprint-PDF-Download'), # Action link
 
         path('jspdf', views.jspdf, name='JsPDF'),

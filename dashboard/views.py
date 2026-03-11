@@ -17,6 +17,10 @@ import json
 from pyproj import Geod
 import numpy as np
 import plotly.express as px
+from bokeh.plotting import figure
+from bokeh.embed import components
+from bokeh.resources import CDN
+# Removed bokeh.layouts.column import
 
 # WGS84 ellipsoid (default for lat/lon)
 geod = Geod(ellps="WGS84")
@@ -168,18 +172,50 @@ def echarts(request):
     })
 
 def matplotlib_pdf(request):
-    # Create a Matplotlib figure
-    fig, ax = plt.subplots()
-    ax.plot([1, 2, 3, 4], [1, 4, 2, 3])
-    ax.set_title('Simple Plot')
-
-    # Save the figure to a PDF buffer
+    # Create a buffer for the PDF
     buffer = io.BytesIO()
+    
+    # Create a PDF object
     with PdfPages(buffer) as pdf:
+        # Page 1: Multi-plot Layout
+        fig, axs = plt.subplots(2, 2, figsize=(11.69, 8.27)) # A4 Landscape size
+        fig.suptitle('Matplotlib Multi-Graph Report', fontsize=16)
+        
+        # Plot 1: Line
+        x = np.linspace(0, 10, 100)
+        axs[0, 0].plot(x, np.sin(x))
+        axs[0, 0].set_title('Sine Wave')
+        
+        # Plot 2: Scatter
+        axs[0, 1].scatter(np.random.rand(50), np.random.rand(50), c='red')
+        axs[0, 1].set_title('Random Scatter')
+        
+        # Plot 3: Bar
+        categories = ['A', 'B', 'C', 'D']
+        values = [23, 45, 56, 78]
+        axs[1, 0].bar(categories, values, color='green')
+        axs[1, 0].set_title('Category Values')
+        
+        # Plot 4: Histogram
+        data = np.random.randn(1000)
+        axs[1, 1].hist(data, bins=30, color='purple')
+        axs[1, 1].set_title('Normal Distribution')
+        
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95]) # Adjust for suptitle
         pdf.savefig(fig)
+        plt.close()
+
+        # Page 2: Another single large plot
+        fig2, ax2 = plt.subplots(figsize=(11.69, 8.27))
+        x = np.linspace(0, 2*np.pi, 400)
+        y = np.sin(x**2)
+        ax2.plot(x, y)
+        ax2.set_title('Complex Function')
+        pdf.savefig(fig2)
+        plt.close()
     
     buffer.seek(0)
-    return FileResponse(buffer, as_attachment=True, filename='matplotlib_report.pdf')
+    return FileResponse(buffer, as_attachment=True, filename='matplotlib_multipage_report.pdf')
 
 def weasyprint_view(request):
     # 1. Create Plotly Charts for Preview
@@ -235,6 +271,7 @@ def weasyprint_pdf(request):
     return response
 
 def jspdf(request):
+    # Pass data to the template for ECharts
     return render(request, 'dashboard/jspdf.html', {
         'title': 'JsPDF',
         'page_header': 'JsPDF Report',

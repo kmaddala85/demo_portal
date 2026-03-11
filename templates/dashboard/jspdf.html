@@ -3,24 +3,200 @@
 {% block content%}
 
 <!--
-    Library: jsPDF
-    License: MIT License
-    Source: https://github.com/parallax/jsPDF
-    Copyright (c) 2010-2021 James Hall, https://github.com/MrRio/jsPDF
+    Library: jsPDF + html2canvas + ECharts
+    License: MIT / Apache 2.0
 -->
 
 <div class="row" style="margin-top: 2%; margin-bottom: 20px;">
-    <h3>JsPDF</h3>
-    <p class="text-muted"><small>PDF generation powered by jsPDF (MIT License)</small></p>
-    <button id="generate-pdf" class="btn btn-primary">Generate PDF</button>
+    <div class="col-md-12 d-flex justify-content-between align-items-center">
+        <h3>JsPDF Report Generation</h3>
+        <input type="hidden" id="pheader" value="ECharts Analysis Report">
+        <button id="generate-pdf" class="btn btn-primary btn-lg">
+            <i class="bi bi-file-earmark-pdf-fill"></i> Download PDF Report
+        </button>
+    </div>
+    <div class="alert alert-info mt-3" role="alert">
+        <i class="bi bi-info-circle-fill"></i> <strong>Developer Note:</strong> For best results when capturing ECharts with jsPDF/html2canvas, initialize ECharts with the <code>{ renderer: 'svg' }</code> option. Canvas rendering may produce lower quality or blank images in PDFs.
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card html-content" id="report-content">
+            <div class="card-header">
+                <h3 class="card-title">Sales & Trend Analysis</h3>
+            </div>
+            <div class="card-body">
+                <p>This report demonstrates high-quality vector chart capture using ECharts in SVG mode.</p>
+
+                <!-- ECharts Container -->
+                <div id="echart-container" style="width: 100%; height: 500px;"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script>
-    document.getElementById('generate-pdf').addEventListener('click', function() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF();
-        doc.text("Hello world!", 10, 10);
-        doc.save("a4.pdf");
+    // Initialize ECharts
+    var chartDom = document.getElementById('echart-container');
+    // IMPORTANT: Use 'svg' renderer for better PDF compatibility with html2canvas
+    var myChart = echarts.init(chartDom, null, { renderer: 'svg' });
+    var option;
+
+    option = {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+                type: 'cross',
+                crossStyle: {
+                    color: '#999'
+                }
+            }
+        },
+        toolbox: {
+            feature: {
+                dataView: { show: true, readOnly: false },
+                magicType: { show: true, type: ['line', 'bar'] },
+                restore: { show: true },
+                saveAsImage: { show: true }
+            }
+        },
+        legend: {
+            data: ['Evaporation', 'Precipitation', 'Temperature']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: 'Precipitation',
+                min: 0,
+                max: 250,
+                interval: 50,
+                axisLabel: {
+                    formatter: '{value} ml'
+                }
+            },
+            {
+                type: 'value',
+                name: 'Temperature',
+                min: 0,
+                max: 25,
+                interval: 5,
+                axisLabel: {
+                    formatter: '{value} °C'
+                }
+            }
+        ],
+        series: [
+            {
+                name: 'Evaporation',
+                type: 'bar',
+                tooltip: {
+                    valueFormatter: function (value) {
+                        return value + ' ml';
+                    }
+                },
+                data: [2.0, 4.9, 7.0, 23.2, 25.6, 76.7, 135.6, 162.2, 32.6, 20.0, 6.4, 3.3]
+            },
+            {
+                name: 'Precipitation',
+                type: 'bar',
+                tooltip: {
+                    valueFormatter: function (value) {
+                        return value + ' ml';
+                    }
+                },
+                data: [2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3]
+            },
+            {
+                name: 'Temperature',
+                type: 'line',
+                yAxisIndex: 1,
+                tooltip: {
+                    valueFormatter: function (value) {
+                        return value + ' °C';
+                    }
+                },
+                data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
+            }
+        ]
+    };
+
+    option && myChart.setOption(option);
+
+    // Handle window resize
+    window.addEventListener('resize', function() {
+        myChart.resize();
+    });
+
+    // PDF Generation Logic
+    $(function () {
+      $("#generate-pdf").on('click', function() {
+        var pheader = $("#pheader").attr('value')
+        $("#progress_bar_id").show()
+
+        var targetElement = $(".html-content");
+        var HTML_Width = targetElement.width();
+        var HTML_Height = targetElement[0].scrollHeight;
+
+        const htmlTag = document.documentElement;
+        const currentTheme = document.body.getAttribute("data-bs-theme") || 'light';
+        const bg_color = (currentTheme == 'dark') ? '#212529' : 'white';
+
+        const htmlContent = targetElement[0];
+
+        if (currentTheme == 'dark') {
+            htmlContent.style.backgroundColor = "#212529";
+            htmlContent.style.color = "white";
+        } else {
+            htmlContent.style.backgroundColor = "white";
+            htmlContent.style.color = "black";
+        }
+
+        html2canvas(htmlContent, {
+            scale: 2,
+            backgroundColor: bg_color,
+            height: HTML_Height,
+            windowHeight: HTML_Height
+        }).then(function (canvas) {
+            var imgData = canvas.toDataURL("image/png", 1);
+            const { jsPDF } = window.jspdf;
+
+            var pdf = new jsPDF({
+                orientation: (HTML_Width > HTML_Height) ? 'landscape' : 'portrait',
+                unit: 'pt',
+                format: [HTML_Width, HTML_Height + 100]
+            });
+
+            if (currentTheme == 'dark') {
+                pdf.setFillColor(33, 37, 41);
+            } else {
+                pdf.setFillColor(255, 255, 255);
+            }
+
+            pdf.rect(0, 0, HTML_Width, HTML_Height + 100, "F");
+            pdf.addImage(imgData, 'png', 0, 50, HTML_Width, HTML_Height);
+
+            pdf.setFont('helvetica');
+            pdf.setFontSize(23);
+            pdf.setTextColor(13, 110, 253);
+
+            pdf.text(pheader, HTML_Width / 2, 35, {align: 'center'});
+            pdf.save(pheader + ".pdf");
+
+            $("#progress_bar_id").hide();
+            htmlContent.style.backgroundColor = "";
+            htmlContent.style.color = "";
+        });
+      });
     });
 </script>
 
